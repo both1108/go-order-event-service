@@ -7,6 +7,7 @@ import (
 	"go-order-event-service/internal/stream"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +35,13 @@ func main() {
 		}
 
 		// ⭐⭐⭐ CORS（SSE 一定要在這）
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+		// ⭐⭐⭐ CORS（SSE 一定要在這）
+		allowedOrigin := os.Getenv("SSE_ALLOW_ORIGIN")
+		if allowedOrigin == "" {
+			allowedOrigin = "http://localhost:5173" // 預設給本機
+		}
+
+		c.Writer.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		c.Writer.Header().Set("Content-Type", "text/event-stream")
